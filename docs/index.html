@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#14161c">
+  <title>Readout</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/library" class="brand"><img src="icons/icon.svg" alt="" width="28" height="28"> Readout</a>
+    <nav>
+      <a href="#/library" data-nav="library">Library</a>
+      <a href="#/settings" data-nav="settings">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- LIBRARY -->
+    <section id="view-library" class="view">
+      <div id="no-key-banner" class="banner" hidden>
+        Add your OpenAI API key in <a href="#/settings">Settings</a> to get started.
+      </div>
+
+      <h2>Add something to listen to</h2>
+      <div class="add-grid">
+        <button class="add-btn" id="btn-paste">
+          <span class="ico">📋</span><span>Paste</span><small>text or screenshot</small>
+        </button>
+        <button class="add-btn" id="btn-camera">
+          <span class="ico">📷</span><span>Photo</span><small>snap a book page</small>
+        </button>
+        <button class="add-btn" id="btn-images">
+          <span class="ico">🖼️</span><span>Images</span><small>screenshots / pages</small>
+        </button>
+        <button class="add-btn" id="btn-file">
+          <span class="ico">📄</span><span>File</span><small>PDF or .txt</small>
+        </button>
+        <button class="add-btn" id="btn-type">
+          <span class="ico">✍️</span><span>Type</span><small>blank document</small>
+        </button>
+      </div>
+      <input type="file" id="in-camera" accept="image/*" capture="environment" hidden>
+      <input type="file" id="in-images" accept="image/*" multiple hidden>
+      <input type="file" id="in-file" accept=".pdf,.txt,.md,application/pdf,text/plain" multiple hidden>
+      <p class="hint desktop-only">Tip: press <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> to screenshot, then <kbd>Ctrl</kbd>+<kbd>V</kbd> here. You can also drop files onto this window.</p>
+      <p class="hint mobile-only">Tip: take a screenshot or select text in any app, tap <b>Share</b>, and choose <b>Readout</b>.</p>
+
+      <h2>Library</h2>
+      <ul id="doc-list" class="doc-list"></ul>
+      <p id="empty-lib" class="muted" hidden>Nothing here yet.</p>
+    </section>
+
+    <!-- EDITOR -->
+    <section id="view-editor" class="view" hidden>
+      <input id="ed-title" class="title-input" placeholder="Title">
+      <div class="row wrap">
+        <button id="ed-add-images" class="btn">+ Add pages (images)</button>
+        <button id="ed-cleanup" class="btn" title="Uses the AI to fix OCR errors, remove page numbers, headers and footnote clutter">✨ Clean up text</button>
+        <span id="ed-count" class="muted small"></span>
+      </div>
+      <textarea id="ed-text" placeholder="Paste or type text here…"></textarea>
+      <div class="row">
+        <button id="ed-cancel" class="btn">Cancel</button>
+        <span class="spacer"></span>
+        <button id="ed-save" class="btn">Save</button>
+        <button id="ed-listen" class="btn primary">Save &amp; Listen ▶</button>
+      </div>
+    </section>
+
+    <!-- READER -->
+    <section id="view-reader" class="view" hidden>
+      <div class="reader-head">
+        <h2 id="rd-title"></h2>
+        <div class="row wrap">
+          <button id="rd-play" class="btn primary">▶ Listen</button>
+          <button id="rd-edit" class="btn">Edit</button>
+          <details class="menu">
+            <summary class="btn">Study tools ▾</summary>
+            <div class="menu-body">
+              <button data-study="summary">🧠 Spoken summary</button>
+              <button data-study="quiz">❓ Audio quiz (with answer pauses)</button>
+              <button data-study="explain">🧑‍🏫 Explain it like a tutor</button>
+              <button data-study="terms">📚 Key terms &amp; definitions</button>
+            </div>
+          </details>
+          <details class="menu">
+            <summary class="btn">Offline ▾</summary>
+            <div class="menu-body">
+              <button id="rd-prepare">⬇️ Pre-generate all audio (for the gym)</button>
+              <button id="rd-export">💾 Export as one MP3 file</button>
+            </div>
+          </details>
+        </div>
+        <p id="rd-meta" class="muted small"></p>
+      </div>
+      <div id="rd-text" class="reader-text"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view" hidden>
+      <h2>Settings</h2>
+
+      <label class="field">
+        <span>OpenAI API key</span>
+        <div class="row">
+          <input id="st-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+          <button id="st-key-show" class="btn">Show</button>
+          <button id="st-key-test" class="btn">Test</button>
+        </div>
+        <small class="muted">Stored only on this device. Tip: create a separate key just for this app and set a monthly budget limit in your OpenAI dashboard.</small>
+      </label>
+
+      <label class="field">
+        <span>Voice</span>
+        <div class="row">
+          <select id="st-voice"></select>
+          <button id="st-preview" class="btn">▶ Preview</button>
+        </div>
+      </label>
+
+      <label class="field">
+        <span>Voice model</span>
+        <select id="st-tts-model">
+          <option value="gpt-4o-mini-tts">gpt-4o-mini-tts: most natural, follows a speaking style</option>
+          <option value="tts-1">tts-1: fast and cheap, no style control</option>
+          <option value="tts-1-hd">tts-1-hd: higher quality, no style control</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Speaking style <small class="muted">(gpt-4o-mini-tts only)</small></span>
+        <textarea id="st-instructions" rows="3"></textarea>
+        <div class="row wrap" id="st-style-presets"></div>
+      </label>
+
+      <label class="field">
+        <span>Default speed: <b id="st-rate-val"></b></span>
+        <input id="st-rate" type="range" min="0.5" max="3" step="0.05">
+      </label>
+
+      <label class="field">
+        <span>AI model for reading images and study tools</span>
+        <input id="st-text-model" list="text-models" spellcheck="false">
+        <datalist id="text-models">
+          <option value="gpt-4.1-mini"><option value="gpt-4.1"><option value="gpt-4o-mini"><option value="gpt-4o"><option value="gpt-5-mini"><option value="gpt-5">
+        </datalist>
+        <small class="muted">If you get a "model not found" error, pick another model from the list.</small>
+      </label>
+
+      <label class="check">
+        <input id="st-visuals" type="checkbox">
+        <span>When reading images, describe equations, charts and diagrams in words</span>
+      </label>
+
+      <div class="field">
+        <span>Storage</span>
+        <p id="st-storage" class="muted small"></p>
+        <button id="st-clear-audio" class="btn">Clear saved audio</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- PLAYER BAR -->
+  <footer id="player" class="player" hidden>
+    <div class="p-info">
+      <a id="p-title" class="p-title" href="#"></a>
+      <span id="p-status" class="p-status"></span>
+    </div>
+    <input id="p-progress" type="range" min="0" max="1" step="0.001" value="0" aria-label="Position">
+    <div class="p-controls">
+      <button id="p-prev" title="Previous section" aria-label="Previous section">⏮</button>
+      <button id="p-back" title="Back 15 seconds" aria-label="Back 15 seconds">↺15</button>
+      <button id="p-toggle" class="p-play" aria-label="Play">▶</button>
+      <button id="p-fwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">15↻</button>
+      <button id="p-next" title="Next section" aria-label="Next section">⏭</button>
+      <select id="p-rate" aria-label="Speed"></select>
+    </div>
+  </footer>
+  <audio id="audio" preload="auto"></audio>
+
+  <div id="busy" class="busy" hidden><div class="busy-box"><div class="spinner"></div><p id="busy-msg"></p><button id="busy-cancel" class="btn">Cancel</button></div></div>
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
