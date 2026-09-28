@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Readout settings</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body>
+  <div class="options">
+    <h1><img src="icons/icon-48.png" width="32" height="32" alt=""> Readout settings</h1>
+
+    <label class="field">
+      <span>OpenAI API key</span>
+      <div class="row">
+        <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+        <button id="key-show" class="btn">Show</button>
+        <button id="key-test" class="btn">Test</button>
+      </div>
+      <small class="muted">Stored only in this browser. Tip: use a dedicated key with a monthly budget limit.</small>
+    </label>
+
+    <label class="field">
+      <span>Voice</span>
+      <div class="row">
+        <select id="voice"></select>
+        <button id="preview" class="btn">▶ Preview</button>
+      </div>
+    </label>
+
+    <label class="field">
+      <span>Voice model</span>
+      <select id="tts-model">
+        <option value="gpt-4o-mini-tts">gpt-4o-mini-tts: most natural, follows a speaking style</option>
+        <option value="tts-1">tts-1: fast and cheap, no style control</option>
+        <option value="tts-1-hd">tts-1-hd: higher quality, no style control</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Speaking style <small class="muted">(gpt-4o-mini-tts only)</small></span>
+      <textarea id="instructions" rows="3"></textarea>
+      <div class="row wrap" id="presets" style="margin-top:8px"></div>
+    </label>
+
+    <label class="field">
+      <span>Speed: <b id="rate-val"></b></span>
+      <input id="rate" type="range" min="0.5" max="3" step="0.05">
+    </label>
+
+    <label class="field">
+      <span>AI model for reading images / screen areas</span>
+      <input id="text-model" list="text-models" spellcheck="false">
+      <datalist id="text-models">
+        <option value="gpt-4.1-mini"><option value="gpt-4.1"><option value="gpt-4o-mini"><option value="gpt-4o"><option value="gpt-5-mini"><option value="gpt-5">
+      </datalist>
+      <small class="muted">If you see a "model not found" error, choose another model from the list.</small>
+    </label>
+
+    <h2>On web pages</h2>
+    <label class="check"><input id="floating" type="checkbox"><span>Show the 🎧 button in the corner of every page</span></label>
+    <label class="check"><input id="hover" type="checkbox"><span>Show a ▶ "read from here" button next to paragraphs when you hover them</span></label>
+    <label class="check"><input id="autoscroll" type="checkbox"><span>Scroll the page to follow along while reading</span></label>
+    <label class="check"><input id="visuals" type="checkbox"><span>When reading images, describe equations, charts and diagrams in words</span></label>
+
+    <h2>Keyboard shortcuts</h2>
+    <table class="keys">
+      <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd></td><td>Read the selected text, or the whole page</td></tr>
+      <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd></td><td>Play / pause</td></tr>
+      <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Drag a box around anything on screen to read it</td></tr>
+      <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd></td><td>Open the Readout popup</td></tr>
+    </table>
+    <p class="muted small">Change these at <b>chrome://extensions/shortcuts</b>. You can also make play/pause work when Chrome isn't focused.</p>
+
+    <h2>Storage</h2>
+    <p class="muted small">Audio you've listened to is saved, so replays are free.</p>
+    <button id="clear" class="btn">Clear saved audio</button>
+  </div>
+  <div id="toast" class="toast" hidden></div>
+  <script src="shared.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

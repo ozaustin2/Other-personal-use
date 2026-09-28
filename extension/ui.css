@@ -1,0 +1,70 @@
+:root {
+  --bg: #14161c; --surface: #1d2029; --surface-2: #262a35; --text: #e9ebf1; --muted: #9aa1b2;
+  --accent: #7c9cff; --accent-text: #0d1020; --border: #323746; --danger: #ff8c8c;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f7fb; --surface: #fff; --surface-2: #eceff6; --text: #1a1d26; --muted: #5d6475;
+    --accent: #3d63e0; --accent-text: #fff; --border: #d9dde8; --danger: #c73a3a;
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); }
+[hidden] { display: none !important; }
+h1 { font-size: 18px; margin: 0; display: flex; align-items: center; gap: 8px; }
+h2 { font-size: 15px; margin: 18px 0 8px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.wrap { flex-wrap: wrap; }
+.spacer { flex: 1; }
+.btn {
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  padding: 8px 12px; border-radius: 10px; font: inherit; cursor: pointer; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+input, select, textarea {
+  font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 10px; width: 100%;
+}
+.row input, .row select { flex: 1; min-width: 0; }
+input[type=range] { padding: 0; accent-color: var(--accent); }
+.banner { background: rgba(124,156,255,.15); border: 1px solid var(--accent); padding: 10px; border-radius: 10px; margin: 10px 0; }
+kbd { background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; font-size: 12px; }
+
+/* popup */
+.popup { width: 360px; padding: 14px; }
+.actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+.action {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 6px; border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); cursor: pointer; font: inherit; font-size: 12.5px; text-align: center;
+}
+.action:hover { border-color: var(--accent); }
+.action b { font-size: 22px; font-weight: normal; }
+.now { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+.now .t { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now .s { color: var(--muted); font-size: 12px; margin: 2px 0 6px; }
+.now .s.error { color: var(--danger); }
+.bar { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.ctl { display: flex; align-items: center; justify-content: space-between; }
+.ctl button { background: none; border: none; color: var(--text); font-size: 15px; cursor: pointer; min-width: 34px; height: 34px; border-radius: 17px; }
+.ctl button:hover { background: var(--surface-2); }
+.ctl .play { background: var(--accent); color: var(--accent-text); width: 42px; height: 42px; border-radius: 21px; }
+.ctl select { width: auto; padding: 4px 6px; }
+textarea { resize: vertical; }
+.foot { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12.5px; }
+
+/* options */
+.options { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+.field { display: block; margin: 16px 0; }
+.field > span { display: block; font-weight: 600; margin-bottom: 6px; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0; }
+.check input { width: auto; margin-top: 3px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 14px; border-radius: 10px; }
+.toast.error { background: var(--danger); color: #fff; }
+table.keys td { padding: 3px 12px 3px 0; }

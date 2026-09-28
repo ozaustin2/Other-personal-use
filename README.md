@@ -63,8 +63,40 @@ Each one creates a new item in your library.
 ## Costs (billed to your OpenAI account)
 You pay OpenAI directly at their API prices. A typical textbook chapter costs cents, not dollars. Check current prices at https://openai.com/api/pricing. Saved audio replays for free.
 
+## Chrome extension (Windows desktop)
+
+The `extension/` folder is a Speechify-style Chrome extension that reads any web page aloud with the same OpenAI voices.
+
+### Install it (one time)
+1. On GitHub, open this repo → green **Code** button → **Download ZIP**. Unzip it somewhere permanent, e.g. `Documents\Readout`. Don't delete the folder later; Chrome loads the extension from it.
+2. In Chrome, go to **chrome://extensions** and turn on **Developer mode** (top-right).
+3. Click **Load unpacked** and select the **`extension`** folder inside what you unzipped.
+4. The settings page opens automatically. Paste your OpenAI key → **Test**.
+5. Click the puzzle-piece icon in Chrome's toolbar → **pin** Readout.
+
+To update later: download and unzip again over the same folder, then click the ↻ reload icon on Readout's card in chrome://extensions.
+
+### What it does
+| Feature | How |
+|---|---|
+| Read the whole article | Click the 🎧 button in the bottom-right corner of any page, press **Alt+Shift+R**, or right-click → *Read this page aloud*. Menus, sidebars and footers are skipped. |
+| Read from a specific paragraph | Hover a paragraph and click the small ▶ that appears beside it. |
+| Read selected text | Select text → **Alt+Shift+R**, or right-click → *Read selection aloud*. |
+| Read anything on screen | **Alt+Shift+S**, then drag a box around it. Works on PDFs, Google Docs, Kindle Cloud Reader, images and videos. |
+| Read text in an image | Right-click the image → *Read the text in this image*. |
+| Read pasted text | Click the Readout toolbar icon → paste → **Read**. |
+| Follow along | The paragraph being read is highlighted, and the page scrolls with it. |
+| Controls | The floating player has play/pause, ±15 s, previous/next paragraph, speed and stop. **Alt+Shift+P** plays/pauses. |
+
+Audio keeps playing when you switch tabs. Already-heard audio is cached, so replays are free.
+Change shortcuts at **chrome://extensions/shortcuts**. You can set play/pause to *Global* so it works even when Chrome isn't focused.
+
+Pages that Chrome doesn't let extensions touch (the Chrome Web Store, `chrome://` pages, and Chrome's built-in PDF viewer) fall back to reading a screenshot of the visible area. Selecting text in a PDF and right-clicking → *Read selection aloud* also works.
+
 ## Files
-Everything is in `docs/` (plain HTML/CSS/JS, no build step):
+The phone/desktop app is in `docs/` (plain HTML/CSS/JS, no build step):
 `index.html`, `styles.css`, `app.js` (the app), `sw.js` (offline + share-sheet support), `manifest.webmanifest` (install info), `icons/`.
 
 To run it locally: `cd docs && python -m http.server 8000`, then open http://localhost:8000.
+
+The Chrome extension is in `extension/`: `background.js` (commands, context menus, routing), `offscreen.js` (audio playback and OpenAI calls), `content.js` (page text extraction, highlighting, floating player, screen-area selection), `popup.*`, `options.*`, and `shared.js`.

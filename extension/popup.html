@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="popup">
+  <h1><img src="icons/icon-32.png" width="22" height="22" alt=""> Readout</h1>
+
+  <div id="no-key" class="banner" hidden>Add your OpenAI API key in <a href="#" id="open-options-2">Settings</a> first.</div>
+
+  <div class="actions">
+    <button class="action" data-action="readPage"><b>📄</b>Read page</button>
+    <button class="action" data-action="readSelection"><b>✂️</b>Read selection</button>
+    <button class="action" data-action="readArea"><b>🔲</b>Read screen area</button>
+  </div>
+
+  <div id="now" class="now" hidden>
+    <div class="t" id="now-title"></div>
+    <div class="s" id="now-status"></div>
+    <div class="bar"><i id="now-bar"></i></div>
+    <div class="ctl">
+      <button data-c="prev" title="Previous">⏮</button>
+      <button data-c="back" title="Back 15 s">↺15</button>
+      <button data-c="toggle" id="now-play" class="play" title="Play / pause">▶</button>
+      <button data-c="fwd" title="Forward 15 s">15↻</button>
+      <button data-c="next" title="Next">⏭</button>
+      <select id="rate" title="Speed"></select>
+      <button data-c="stop" title="Stop">■</button>
+    </div>
+  </div>
+
+  <h2>Paste text to read</h2>
+  <textarea id="text" rows="4" placeholder="Paste anything here…"></textarea>
+  <div class="row" style="margin-top:8px">
+    <span class="muted small">Tip: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> reads the page</span>
+    <span class="spacer"></span>
+    <button id="read-text" class="btn primary">Read ▶</button>
+  </div>
+
+  <div class="foot">
+    <a href="#" id="open-options">⚙️ Settings &amp; shortcuts</a>
+    <a href="https://ozaustin2.github.io/Other-personal-use/" target="_blank">Open Readout app ↗</a>
+  </div>
+  <script src="shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
