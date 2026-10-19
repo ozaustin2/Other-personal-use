@@ -25,7 +25,7 @@ function tick() {
     var secs = bumpDaily_('runtimeSec', Math.round((nowMs_() - started) / 1000));
     if (secs > 75 * 60 && prop_('runtimeAlertDay') !== todayKey_()) {
       setProp_('runtimeAlertDay', todayKey_());
-      alert_('Apps Script runtime high', 'Triggers ran ' + Math.round(secs / 60) + ' min today (free Google accounts allow 90). Consider raising FB_FREE_INTERVAL_MIN or lowering SONNET_DAILY_CAP.');
+      alert_('Apps Script runtime high', 'Triggers ran ' + Math.round(secs / 60) + ' min today (free Google accounts allow 90). Consider raising FB_FREE_INTERVAL_MIN or lowering VALUE_DAILY_CAP.');
     }
   }
 }

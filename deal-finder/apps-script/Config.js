@@ -103,11 +103,12 @@ var DEFAULT_SETTINGS = [
 
   // AI
   ['MODEL_FILTER', 'claude-haiku-5-5', 'Cheap model for filtering and quick estimates.'],
-  ['MODEL_VALUE', 'claude-sonnet-5-5', 'Stronger model for valuation, scoring and listing drafts.'],
+  ['MODEL_VALUE', 'claude-haiku-5-5', 'Model for valuation/scoring and manual shares. claude-haiku-5-5 ≈ 0.1¢ per item; claude-sonnet-5-5 is more accurate but ~20× the cost.'],
+  ['MODEL_DRAFT', 'claude-sonnet-5-5', 'Model for on-demand resale listing drafts (only when you tap Draft listing, ≈ 5¢ each).'],
   ['VALUE_EFFORT', 'low', 'Effort for the valuation model (low / medium / high). Higher = better reasoning, more cost.'],
-  ['SONNET_DAILY_CAP', 30, 'Max full valuations per day (cost control). Extra items get a quick estimate instead.'],
-  ['SONNET_MIN_QUICK_PROFIT', 40, 'Items (free or paid) need at least this quick profit guess (resale minus price, from the cheap model) to get a full valuation.'],
-  ['CLAUDE_MONTHLY_BUDGET', 20, 'Pause full valuations if month-to-date Claude cost exceeds this (USD).'],
+  ['VALUE_DAILY_CAP', 60, 'Max full valuations per day (cost control). Extra items get a quick estimate instead.'],
+  ['VALUE_MIN_QUICK_PROFIT', 40, 'Items (free or paid) need at least this quick profit guess (resale minus price, from the cheap model) to get a full valuation.'],
+  ['CLAUDE_MONTHLY_BUDGET', 3, 'Use quick estimates only if month-to-date Claude cost exceeds this (USD). Expected ≈ $1–3/month with Haiku.'],
 
   // Budget
   ['APIFY_MONTHLY_BUDGET', 30, 'Pause Apify runs if month-to-date Apify cost exceeds this (USD). Paid sweeps pause first when the pace is over budget.'],

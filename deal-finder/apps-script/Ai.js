@@ -2,7 +2,8 @@
  * Ai.js: Claude API calls (raw HTTP; Apps Script has no Anthropic SDK).
  *
  * Cheap model (MODEL_FILTER, default claude-haiku-5-5): batch filter + quick value guess.
- * Strong model (MODEL_VALUE, default claude-sonnet-5-5): valuation/scoring, share extraction, listing drafts.
+ * Valuation model (MODEL_VALUE, default claude-haiku-5-5): valuation/scoring and share extraction.
+ * Draft model (MODEL_DRAFT, default claude-sonnet-5-5): resale listing drafts, only when you ask.
  * Every call logs its cost to the Logs tab under job "claude:<task>".
  */
 
@@ -279,6 +280,6 @@ function aiDraftListing_(deal, photos, notes) {
       'No emojis spam, no ALL CAPS. KSL category should be a real KSL category/subcategory; Facebook category a real Marketplace category. ' +
       'pricing_guidance: list price, firm vs OBO, and the lowest price to accept. Order photos best-first and list any retakes needed (angles, model plate, working demo, lighting).'
   });
-  return claudeJson_('draft', settingStr_('MODEL_VALUE'), OWNER_PROFILE + '\nYou write resale listings that sell fast at a fair price.',
+  return claudeJson_('draft', settingStr_('MODEL_DRAFT') || settingStr_('MODEL_VALUE'), OWNER_PROFILE + '\nYou write resale listings that sell fast at a fair price.',
     content, DRAFT_SCHEMA, { effort: 'medium', maxTokens: 12000 });
 }

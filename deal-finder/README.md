@@ -181,7 +181,7 @@ The drafts are saved to a Google Doc in the item folder. Nothing is ever posted 
 | Facebook free sweep | every 30 min, 7:00–22:00 = 30 runs × 8 listings = 240/day → **$36–45/mo** | `FB_FREE_INTERVAL_MIN`, `FB_FREE_RESULTS`, active hours |
 | Facebook paid sweeps | 17 URLs × 2/day (5 listings, 10 for no-max) → **$28–35/mo** | `FB_PAID_TIMES`, `FB_PAID_RESULTS`, disable rows in the tables |
 | KSL collector | baseline ≈ 50 page loads once; ~$0 afterwards | only runs in backup mode |
-| Claude | Haiku filter ≈ $1/mo; Sonnet valuation ≈ 2–4¢ each, capped at 30/day → **$10–25/mo** | `SONNET_DAILY_CAP`, `SONNET_MIN_QUICK_PROFIT`, `VALUE_EFFORT`, `CLAUDE_MONTHLY_BUDGET` |
+| Claude | Haiku for filtering + valuation ≈ 0.1¢ per item (≤ 60 valuations/day) → **≈ $1–3/mo**; Sonnet only for listing drafts you ask for (≈ 5¢ each) | `MODEL_VALUE`, `VALUE_DAILY_CAP`, `VALUE_MIN_QUICK_PROFIT`, `CLAUDE_MONTHLY_BUDGET` ($3) |
 | eBay, ntfy, Google | free | |
 
 The Facebook actor charges **$0.0062 per listing on Apify's free plan** and $0.005 on the $29/mo Starter plan, including repeats it has already shown. Full Facebook coverage at the defaults is about **$65–80/month**, well above a $20–30 target.
@@ -202,7 +202,7 @@ To land near $30 with full coverage, try:
 - **Thresholds:** `FREE_PUSH_MIN_SCORE` (8), `PAID_PUSH_MIN_SCORE` (9), and the tier miles and profits
 - **Keyword table:** keyword, radius, max price (leave blank for no max), enabled
 - **Facebook categories:** Facebook slug, max price, enabled
-- **Models:** `MODEL_FILTER` (claude-haiku-5-5), `MODEL_VALUE` (claude-sonnet-5-5), `VALUE_EFFORT`
+- **Models:** `MODEL_FILTER` and `MODEL_VALUE` (claude-haiku-5-5), `MODEL_DRAFT` (claude-sonnet-5-5), `VALUE_EFFORT`. Set `MODEL_VALUE` to `claude-sonnet-5-5` for sharper valuations at ~20× the cost.
 - **Budgets:** `APIFY_MONTHLY_BUDGET`, `CLAUDE_MONTHLY_BUDGET`
 
 Valuation calls use Claude's server-side refusal fallback (`fallbacks: "default"`), so a rare refused request is retried on a suitable model automatically.

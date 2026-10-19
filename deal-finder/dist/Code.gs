@@ -5,7 +5,8 @@
  * Ai.js: Claude API calls (raw HTTP; Apps Script has no Anthropic SDK).
  *
  * Cheap model (MODEL_FILTER, default claude-haiku-5-5): batch filter + quick value guess.
- * Strong model (MODEL_VALUE, default claude-sonnet-5-5): valuation/scoring, share extraction, listing drafts.
+ * Valuation model (MODEL_VALUE, default claude-haiku-5-5): valuation/scoring and share extraction.
+ * Draft model (MODEL_DRAFT, default claude-sonnet-5-5): resale listing drafts, only when you ask.
  * Every call logs its cost to the Logs tab under job "claude:<task>".
  */
 
@@ -282,7 +283,7 @@ function aiDraftListing_(deal, photos, notes) {
       'No emojis spam, no ALL CAPS. KSL category should be a real KSL category/subcategory; Facebook category a real Marketplace category. ' +
       'pricing_guidance: list price, firm vs OBO, and the lowest price to accept. Order photos best-first and list any retakes needed (angles, model plate, working demo, lighting).'
   });
-  return claudeJson_('draft', settingStr_('MODEL_VALUE'), OWNER_PROFILE + '\nYou write resale listings that sell fast at a fair price.',
+  return claudeJson_('draft', settingStr_('MODEL_DRAFT') || settingStr_('MODEL_VALUE'), OWNER_PROFILE + '\nYou write resale listings that sell fast at a fair price.',
     content, DRAFT_SCHEMA, { effort: 'medium', maxTokens: 12000 });
 }
 
@@ -526,11 +527,12 @@ var DEFAULT_SETTINGS = [
 
   // AI
   ['MODEL_FILTER', 'claude-haiku-5-5', 'Cheap model for filtering and quick estimates.'],
-  ['MODEL_VALUE', 'claude-sonnet-5-5', 'Stronger model for valuation, scoring and listing drafts.'],
+  ['MODEL_VALUE', 'claude-haiku-5-5', 'Model for valuation/scoring and manual shares. claude-haiku-5-5 ≈ 0.1¢ per item; claude-sonnet-5-5 is more accurate but ~20× the cost.'],
+  ['MODEL_DRAFT', 'claude-sonnet-5-5', 'Model for on-demand resale listing drafts (only when you tap Draft listing, ≈ 5¢ each).'],
   ['VALUE_EFFORT', 'low', 'Effort for the valuation model (low / medium / high). Higher = better reasoning, more cost.'],
-  ['SONNET_DAILY_CAP', 30, 'Max full valuations per day (cost control). Extra items get a quick estimate instead.'],
-  ['SONNET_MIN_QUICK_PROFIT', 40, 'Items (free or paid) need at least this quick profit guess (resale minus price, from the cheap model) to get a full valuation.'],
-  ['CLAUDE_MONTHLY_BUDGET', 20, 'Pause full valuations if month-to-date Claude cost exceeds this (USD).'],
+  ['VALUE_DAILY_CAP', 60, 'Max full valuations per day (cost control). Extra items get a quick estimate instead.'],
+  ['VALUE_MIN_QUICK_PROFIT', 40, 'Items (free or paid) need at least this quick profit guess (resale minus price, from the cheap model) to get a full valuation.'],
+  ['CLAUDE_MONTHLY_BUDGET', 3, 'Use quick estimates only if month-to-date Claude cost exceeds this (USD). Expected ≈ $1–3/month with Haiku.'],
 
   // Budget
   ['APIFY_MONTHLY_BUDGET', 30, 'Pause Apify runs if month-to-date Apify cost exceeds this (USD). Paid sweeps pause first when the pace is over budget.'],
@@ -1786,7 +1788,7 @@ function tick() {
     var secs = bumpDaily_('runtimeSec', Math.round((nowMs_() - started) / 1000));
     if (secs > 75 * 60 && prop_('runtimeAlertDay') !== todayKey_()) {
       setProp_('runtimeAlertDay', todayKey_());
-      alert_('Apps Script runtime high', 'Triggers ran ' + Math.round(secs / 60) + ' min today (free Google accounts allow 90). Consider raising FB_FREE_INTERVAL_MIN or lowering SONNET_DAILY_CAP.');
+      alert_('Apps Script runtime high', 'Triggers ran ' + Math.round(secs / 60) + ' min today (free Google accounts allow 90). Consider raising FB_FREE_INTERVAL_MIN or lowering VALUE_DAILY_CAP.');
     }
   }
 }
@@ -2140,9 +2142,9 @@ function wantsKslDetail_(it) {
 function valuateAndRecord_(it) {
   var val = null;
   var quickProfit = (Number(it.quick_resale_guess) || 0) - (Number(it.price) || 0);
-  var capOk = dailyCount_('sonnet') < settingNum_('SONNET_DAILY_CAP');
+  var capOk = dailyCount_('valuations') < settingNum_('VALUE_DAILY_CAP');
   var budgetOk = monthCost_('claude') < settingNum_('CLAUDE_MONTHLY_BUDGET');
-  var worthIt = quickProfit >= settingNum_('SONNET_MIN_QUICK_PROFIT') || it.source === 'Share';
+  var worthIt = quickProfit >= settingNum_('VALUE_MIN_QUICK_PROFIT') || it.source === 'Share';
 
   if (!worthIt) {
     appendFiltered_(it, 'low quick value (resale ~$' + Math.round(it.quick_resale_guess || 0) + ')');
@@ -2152,7 +2154,7 @@ function valuateAndRecord_(it) {
     var comps = null;
     try { comps = ebayComps_(it.title); } catch (e) { logEvent_('warn', 'ebay', e.message); }
     val = aiValuate_(it, comps);
-    bumpDaily_('sonnet');
+    bumpDaily_('valuations');
   } else {
     if (!budgetOk && !prop_('claudeBudgetAlert:' + monthKey_())) {
       setProp_('claudeBudgetAlert:' + monthKey_(), '1');

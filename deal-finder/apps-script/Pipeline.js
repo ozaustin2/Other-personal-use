@@ -92,9 +92,9 @@ function wantsKslDetail_(it) {
 function valuateAndRecord_(it) {
   var val = null;
   var quickProfit = (Number(it.quick_resale_guess) || 0) - (Number(it.price) || 0);
-  var capOk = dailyCount_('sonnet') < settingNum_('SONNET_DAILY_CAP');
+  var capOk = dailyCount_('valuations') < settingNum_('VALUE_DAILY_CAP');
   var budgetOk = monthCost_('claude') < settingNum_('CLAUDE_MONTHLY_BUDGET');
-  var worthIt = quickProfit >= settingNum_('SONNET_MIN_QUICK_PROFIT') || it.source === 'Share';
+  var worthIt = quickProfit >= settingNum_('VALUE_MIN_QUICK_PROFIT') || it.source === 'Share';
 
   if (!worthIt) {
     appendFiltered_(it, 'low quick value (resale ~$' + Math.round(it.quick_resale_guess || 0) + ')');
@@ -104,7 +104,7 @@ function valuateAndRecord_(it) {
     var comps = null;
     try { comps = ebayComps_(it.title); } catch (e) { logEvent_('warn', 'ebay', e.message); }
     val = aiValuate_(it, comps);
-    bumpDaily_('sonnet');
+    bumpDaily_('valuations');
   } else {
     if (!budgetOk && !prop_('claudeBudgetAlert:' + monthKey_())) {
       setProp_('claudeBudgetAlert:' + monthKey_(), '1');
