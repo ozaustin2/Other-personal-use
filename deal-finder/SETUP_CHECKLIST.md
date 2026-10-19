@@ -5,7 +5,7 @@ If you stop partway, just say "let's continue setup" and it picks up at the firs
 
 **Never paste API keys, tokens or passwords into the chat.** Each step tells you where to put them yourself.
 
-Progress: 3 of 47 done
+Progress: 4 of 47 done
 
 ---
 
@@ -15,7 +15,7 @@ Progress: 3 of 47 done
 - [x] 1.2 Anthropic: create an API key named "Deal Finder" at console.anthropic.com → API keys (keep the tab open; you'll paste it in step 2.5)
 - [x] 1.3 Anthropic: add a small prepaid credit (e.g. $5, auto-reload OFF) and set a monthly spend limit of $5 (Settings → Limits)
 - [x] 1.4 Apify: create an account at apify.com (Google sign-in is fine)
-- [ ] 1.5 Apify: set a monthly usage limit (Settings → Usage & billing → Limits), suggested to match `APIFY_MONTHLY_BUDGET`
+- [x] 1.5 Apify: set a monthly usage limit (Settings → Usage & billing → Limits), suggested to match `APIFY_MONTHLY_BUDGET`
 - [ ] 1.6 Apify: copy your API token from Settings → API & Integrations (paste it in 2.5)
 - [ ] 1.7 eBay: create a developer account at developer.ebay.com and wait for approval (can take up to a day; everything else works without it)
 - [ ] 1.8 eBay: create a **Production** keyset; note the App ID (Client ID) and Cert ID (Client Secret) (paste them in 2.5)
