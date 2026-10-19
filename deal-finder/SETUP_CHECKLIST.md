@@ -5,7 +5,7 @@ If you stop partway, just say "let's continue setup" and it picks up at the firs
 
 **Never paste API keys, tokens or passwords into the chat.** Each step tells you where to put them yourself.
 
-Progress: 1 of 47 done
+Progress: 2 of 47 done
 
 ---
 
@@ -13,7 +13,7 @@ Progress: 1 of 47 done
 
 - [ ] 1.1 Create the "Deal Finder" Google Sheet with its attached Apps Script project (done by `clasp create` in 2.3, or by hand if you choose the copy-paste install)
 - [x] 1.2 Anthropic: create an API key named "Deal Finder" at console.anthropic.com → API keys (keep the tab open; you'll paste it in step 2.5)
-- [ ] 1.3 Anthropic: add a small prepaid credit (e.g. $5, auto-reload OFF) and set a monthly spend limit of $5 (Settings → Limits)
+- [x] 1.3 Anthropic: add a small prepaid credit (e.g. $5, auto-reload OFF) and set a monthly spend limit of $5 (Settings → Limits)
 - [ ] 1.4 Apify: create an account at apify.com (Google sign-in is fine)
 - [ ] 1.5 Apify: set a monthly usage limit (Settings → Usage & billing → Limits), suggested to match `APIFY_MONTHLY_BUDGET`
 - [ ] 1.6 Apify: copy your API token from Settings → API & Integrations (paste it in 2.5)
