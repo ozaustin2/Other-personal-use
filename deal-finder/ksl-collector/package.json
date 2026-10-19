@@ -1,0 +1,17 @@
+{
+  "name": "ksl-classifieds-collector",
+  "version": "1.0.0",
+  "description": "Polite, logged-out KSL Classifieds collector for Deal Finder (baseline + backup only).",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "sync-parser": "cp ../apps-script/KslParser.js src/kslParser.cjs",
+    "test": "node --test ../tests/"
+  },
+  "dependencies": {
+    "apify": "^3.7.2",
+    "playwright": "*"
+  },
+  "engines": { "node": ">=20" }
+}

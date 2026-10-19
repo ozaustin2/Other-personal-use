@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #ffffff; --text: #1d1f23; --muted: #646a73; --line: #e2e4e8;
+    --accent: #1a73e8; --green: #1e8e3e; --yellow: #b06000; --gray: #80868b;
+    --badge-green: #d7f5dd; --badge-yellow: #fff1c2; --badge-gray: #eceef1; --free: #0b8043;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121417; --card: #1c1f24; --text: #e8eaed; --muted: #9aa0a6; --line: #2d3138;
+      --accent: #8ab4f8; --green: #81c995; --yellow: #fdd663; --gray: #9aa0a6;
+      --badge-green: #1f3a27; --badge-yellow: #3d3416; --badge-gray: #2a2d33; --free: #81c995;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 1px solid var(--line); padding: 10px 16px; }
+  h1 { font-size: 18px; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: center; }
+  h1 small { font-weight: 400; color: var(--muted); font-size: 13px; }
+  .filters { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+  select, input, button, textarea { font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+  select { flex: 0 0 auto; }
+  button { cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  main { padding: 12px 16px 40px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .card.focus { outline: 3px solid var(--accent); }
+  .photo { position: relative; aspect-ratio: 4 / 3; background: var(--badge-gray) center / cover no-repeat; }
+  .score { position: absolute; top: 8px; left: 8px; font-weight: 700; font-size: 20px; border-radius: 10px; padding: 2px 10px; }
+  .s-hi { background: var(--badge-green); color: var(--green); }
+  .s-mid { background: var(--badge-yellow); color: var(--yellow); }
+  .s-lo { background: var(--badge-gray); color: var(--gray); }
+  .tag { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,.65); color: #fff; font-size: 12px; font-weight: 600; border-radius: 6px; padding: 2px 8px; }
+  .tag.free { background: var(--free); }
+  .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .title { font-weight: 600; font-size: 16px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .nums { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; }
+  .nums b { font-variant-numeric: tabular-nums; }
+  .reason { font-size: 14px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+  .actions a { color: var(--accent); text-decoration: none; padding: 6px 4px; }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 40px 0; }
+  dialog { border: 1px solid var(--line); border-radius: 14px; background: var(--card); color: var(--text); width: min(640px, 94vw); max-height: 88vh; }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog pre { white-space: pre-wrap; font: 14px/1.45 inherit; background: var(--bg); padding: 10px; border-radius: 8px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
+  .row label { display: flex; flex-direction: column; font-size: 13px; color: var(--muted); }
+  #toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: #323232; color: #fff; padding: 8px 14px; border-radius: 8px; display: none; z-index: 20; max-width: 90vw; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Deal Finder <small id="count">Loading…</small></h1>
+  <div class="filters">
+    <select id="fScore"><option value="0">Any score</option><option value="5">5+</option><option value="7">7+</option><option value="8" selected>8+</option><option value="9">9+</option></select>
+    <select id="fFree"><option value="">Free + paid</option><option value="free">Free only</option><option value="paid">Paid only</option></select>
+    <select id="fSource"><option value="">All sources</option></select>
+    <select id="fCategory"><option value="">All categories</option></select>
+    <select id="fStatus"><option value="active">Open (not Sold/Passed)</option><option value="">Any status</option></select>
+    <select id="fTier"><option value="">Any distance</option><option value="1">0–25 mi</option><option value="2">25–50 mi</option><option value="3">50–100 mi</option></select>
+    <select id="fSort"><option value="score">Sort: score</option><option value="profit">Sort: profit</option><option value="pph">Sort: profit/hr</option><option value="new">Sort: newest</option></select>
+    <button id="reload" title="Reload">↻</button>
+  </div>
+</header>
+<main id="grid"></main>
+
+<dialog id="dlg"><div id="dlgBody"></div><div class="row" style="justify-content:flex-end"><button onclick="dlg.close()">Close</button></div></dialog>
+<div id="toast"></div>
+
+<script>
+  var KEY = <?= key ?>;
+  var FOCUS = <?= focusId ?>;
+  var deals = [], statuses = [];
+  var $ = function (id) { return document.getElementById(id); };
+  var dlg = $('dlg');
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function money(n) { return n === '' || n == null || isNaN(n) ? '–' : (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString(); }
+  function toast(msg) { var t = $('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(function () { t.style.display = 'none'; }, 3500); }
+  function call(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (resolve, reject) {
+      var r = google.script.run.withSuccessHandler(resolve).withFailureHandler(function (e) { reject(e); });
+      r[fn].apply(r, [KEY].concat(args));
+    });
+  }
+  function ago(iso) {
+    if (!iso) return '';
+    var m = (Date.now() - new Date(iso).getTime()) / 60000;
+    if (m < 60) return Math.max(1, Math.round(m)) + 'm ago';
+    if (m < 1440) return Math.round(m / 60) + 'h ago';
+    return Math.round(m / 1440) + 'd ago';
+  }
+
+  function load() {
+    $('count').textContent = 'Loading…';
+    call('dashGetDeals').then(function (res) {
+      deals = res.deals; statuses = res.statuses;
+      fillSelect('fSource', deals.map(function (d) { return d.source; }));
+      fillSelect('fCategory', deals.map(function (d) { return d.category; }));
+      if (FOCUS) { $('fScore').value = '0'; $('fStatus').value = ''; }
+      render();
+    }).catch(function (e) { $('count').textContent = 'Error'; toast(e.message || e); });
+  }
+  function fillSelect(id, vals) {
+    var sel = $(id), cur = sel.value, first = sel.options[0].outerHTML;
+    var uniq = vals.filter(function (v, i, a) { return v && a.indexOf(v) === i; }).sort();
+    sel.innerHTML = first + uniq.map(function (v) { return '<option>' + esc(v) + '</option>'; }).join('');
+    sel.value = cur;
+  }
+  function filtered() {
+    var minScore = Number($('fScore').value), fFree = $('fFree').value, src = $('fSource').value, cat = $('fCategory').value,
+        st = $('fStatus').value, tier = $('fTier').value, sort = $('fSort').value;
+    var list = deals.filter(function (d) {
+      if (FOCUS && d.id === FOCUS) return true;
+      if ((Number(d.score) || 0) < minScore) return false;
+      if (fFree === 'free' && !d.free) return false;
+      if (fFree === 'paid' && d.free) return false;
+      if (src && d.source !== src) return false;
+      if (cat && d.category !== cat) return false;
+      if (st === 'active' && (d.status === 'Sold' || d.status === 'Passed')) return false;
+      if (tier && String(d.tier || 1) !== tier) return false;
+      return true;
+    });
+    var key = { score: function (d) { return [Number(d.score) || 0, new Date(d.found).getTime() || 0]; },
+                profit: function (d) { return [Number(d.profit) || 0, 0]; },
+                pph: function (d) { return [Number(d.pph) || 0, 0]; },
+                'new': function (d) { return [new Date(d.found).getTime() || 0, 0]; } }[sort];
+    list.sort(function (a, b) { var ka = key(a), kb = key(b); return kb[0] - ka[0] || kb[1] - ka[1]; });
+    if (FOCUS) list.sort(function (a, b) { return (b.id === FOCUS) - (a.id === FOCUS); });
+    return list;
+  }
+  function render() {
+    var list = filtered();
+    $('count').textContent = list.length + ' of ' + deals.length;
+    if (!list.length) { $('grid').innerHTML = '<div class="empty">No deals match these filters.</div>'; return; }
+    $('grid').innerHTML = list.map(card).join('');
+    if (FOCUS) { var el = document.querySelector('.card.focus'); if (el) el.scrollIntoView({ block: 'center' }); FOCUS = ''; }
+  }
+  function card(d) {
+    var s = Number(d.score) || 0, cls = s >= 8 ? 's-hi' : s >= 5 ? 's-mid' : 's-lo';
+    var opts = statuses.map(function (x) { return '<option' + (x === d.status ? ' selected' : '') + '>' + x + '</option>'; }).join('');
+    var canDraft = ['Picked Up', 'Repairing', 'Listed'].indexOf(d.status) >= 0;
+    return '<div class="card' + (d.id === FOCUS ? ' focus' : '') + '" data-id="' + esc(d.id) + '">' +
+      '<div class="photo" style="background-image:url(\'' + esc(d.image || '') + '\')">' +
+        '<span class="score ' + cls + '">' + (s || '–') + '</span>' +
+        '<span class="tag' + (d.free ? ' free' : '') + '">' + (d.free ? 'FREE' : 'PAID') + '</span></div>' +
+      '<div class="body">' +
+        '<div class="title">' + esc(d.title) + '</div>' +
+        '<div class="meta">' + esc(d.source) + ' · ' + esc(d.city || '?') + (d.dist !== undefined && d.dist !== '' ? ' · ' + esc(d.dist) + ' mi' : '') +
+          ' · found ' + ago(d.found) + (d.category ? ' · ' + esc(d.category) : '') + '</div>' +
+        '<div class="nums"><span>Price <b>' + (d.free ? 'Free' : money(d.price)) + '</b></span>' +
+          '<span>Resale <b>' + money(d.low) + '–' + money(d.high) + '</b></span>' +
+          '<span>Profit <b>' + money(d.profit) + '</b></span><span><b>' + money(d.pph) + '</b>/hr</span>' +
+          (d.difficulty ? '<span>Difficulty <b>' + esc(d.difficulty) + '/5</b></span>' : '') +
+          (d.pickup ? '<span>Pickup <b>' + esc(d.pickup) + '/5</b></span>' : '') +
+          (d.below ? '<span><b>Below market</b></span>' : '') + '</div>' +
+        (d.fault ? '<div class="meta">Likely fault: ' + esc(d.fault) + '</div>' : '') +
+        '<div class="reason">' + esc(d.reasoning) + '</div>' +
+        '<div class="actions">' +
+          '<select onchange="setStatus(\'' + esc(d.id) + '\', this.value)">' + opts + '</select>' +
+          (d.url ? '<a href="' + esc(d.url) + '" target="_blank" rel="noopener">Open listing ↗</a>' : '') +
+          (d.folder ? '<a href="' + esc(d.folder) + '" target="_blank" rel="noopener">Photos</a>' : '') +
+          (canDraft ? '<button onclick="draft(\'' + esc(d.id) + '\')">Draft listing</button>' : '') +
+          (d.draft ? '<a href="' + esc(d.draft) + '" target="_blank" rel="noopener">Draft doc</a>' : '') +
+          (d.status === 'Listed' || d.status === 'Sold' ? '<button onclick="sold(\'' + esc(d.id) + '\')">Log sale</button>' : '') +
+        '</div></div></div>';
+  }
+  function find(id) { return deals.filter(function (d) { return d.id === id; })[0]; }
+  function setStatus(id, status) {
+    call('dashSetStatus', id, status).then(function (r) {
+      var d = find(id); d.status = status; if (r.folder) d.folder = r.folder;
+      toast('Status: ' + status + (r.folder ? '. Photo folder ready.' : ''));
+      render();
+    }).catch(function (e) { toast(e.message || e); });
+  }
+  function draft(id) {
+    var d = find(id);
+    $('dlgBody').innerHTML = '<h3>Draft listing</h3><p class="meta">Upload your photos to the item\'s <a href="' + esc(d.folder || '#') + '" target="_blank">photo folder</a> first. ' +
+      'Optional notes (what you fixed, what\'s included):</p><textarea id="notes" rows="3" style="width:100%"></textarea>' +
+      '<div class="row"><button class="primary" id="go">Write listings</button></div><div id="out"></div>';
+    dlg.showModal();
+    $('go').onclick = function () {
+      $('go').disabled = true; $('out').textContent = 'Writing… (30–60 s)';
+      call('dashDraftListing', id, $('notes').value).then(function (r) {
+        if (!r.ok) { $('out').innerHTML = '<p>' + esc(r.error) + '</p>'; $('go').disabled = false; return; }
+        d.draft = r.docUrl;
+        var block = function (name, x) {
+          return '<h4>' + name + ' · $' + esc(x.price) + '</h4><pre>' + esc(x.title + '\n\n' + x.description + '\n\nCategory: ' + x.category + '\nPricing: ' + x.pricing_guidance) + '</pre>';
+        };
+        $('out').innerHTML = '<p><a href="' + esc(r.docUrl) + '" target="_blank">Open Google Doc ↗</a></p>' + block('KSL', r.ksl) + block('Facebook', r.facebook) +
+          '<h4>Photo order</h4><pre>' + esc(r.photo_order.join('\n')) + '</pre>' + (r.retakes.length ? '<h4>Retakes</h4><pre>' + esc(r.retakes.join('\n')) + '</pre>' : '');
+        render();
+      }).catch(function (e) { $('out').textContent = e.message || e; $('go').disabled = false; });
+    };
+  }
+  function sold(id) {
+    $('dlgBody').innerHTML = '<h3>Log sale</h3><div class="row">' +
+      '<label>Sale price<input id="sp" type="number" inputmode="decimal"></label>' +
+      '<label>Hours spent<input id="hr" type="number" inputmode="decimal"></label>' +
+      '<label>Parts cost<input id="pc" type="number" inputmode="decimal" value="0"></label></div>' +
+      '<div class="row"><button class="primary" id="save">Save</button></div>';
+    dlg.showModal();
+    $('save').onclick = function () {
+      call('dashLogSale', id, $('sp').value, $('hr').value, $('pc').value).then(function (r) {
+        find(id).status = 'Sold'; dlg.close(); toast('Logged. Profit ' + money(r.profit)); render();
+      }).catch(function (e) { toast(e.message || e); });
+    };
+  }
+  ['fScore', 'fFree', 'fSource', 'fCategory', 'fStatus', 'fTier', 'fSort'].forEach(function (id) { $(id).onchange = render; });
+  $('reload').onclick = load;
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "deal-finder",
+  "private": true,
+  "description": "KSL + Facebook Marketplace deal finder (Google Apps Script + Apify).",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "bundle": "node tools/bundle.js",
+    "push": "npm test && clasp push"
+  }
+}

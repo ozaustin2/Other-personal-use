@@ -100,3 +100,9 @@ The phone/desktop app is in `docs/` (plain HTML/CSS/JS, no build step):
 To run it locally: `cd docs && python -m http.server 8000`, then open http://localhost:8000.
 
 The Chrome extension is in `extension/`: `background.js` (commands, context menus, routing), `offscreen.js` (audio playback and OpenAI calls), `content.js` (page text extraction, highlighting, floating player, screen-area selection), `popup.*`, `options.*`, and `shared.js`.
+
+---
+
+# Deal Finder (KSL + Facebook Marketplace)
+
+A separate project in [`deal-finder/`](deal-finder/README.md): automated free and underpriced repairable-item finder for North Salt Lake (Google Apps Script + Apify + Claude). Setup guide: [`deal-finder/SETUP_CHECKLIST.md`](deal-finder/SETUP_CHECKLIST.md).

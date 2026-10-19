@@ -1,0 +1,10 @@
+{
+  "actorSpecification": 1,
+  "name": "ksl-classifieds-collector",
+  "title": "KSL Classifieds collector (Deal Finder)",
+  "description": "Reads public, logged-out KSL Classifieds search pages politely: robots.txt, one request at a time, 3–8 s delays, daily caps, stops on 403/429/CAPTCHA.",
+  "version": "1.0",
+  "buildTag": "latest",
+  "input": "./input_schema.json",
+  "dockerfile": "../Dockerfile"
+}

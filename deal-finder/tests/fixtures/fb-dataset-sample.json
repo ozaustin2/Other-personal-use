@@ -1,0 +1,24 @@
+[
+  {
+    "facebookUrl": "https://www.facebook.com/marketplace/saltlakecity/search/?query=generator",
+    "listingUrl": "https://www.facebook.com/marketplace/item/1189200412268517",
+    "id": "1189200412268517",
+    "primary_listing_photo": { "__typename": "ProductImage", "image": { "uri": "https://scontent.example/photo1.jpg" }, "id": "3853471898214198" },
+    "listing_price": { "formatted_amount": "$65", "amount_with_offset_in_currency": "6500", "amount": "65.00" },
+    "location": { "reverse_geocode": { "city": "Bountiful", "state": "UT", "city_page": { "display_name": "Bountiful, Utah", "id": "1" } } },
+    "is_hidden": false, "is_live": true, "is_pending": false, "is_sold": false, "is_viewer_seller": false,
+    "marketplace_listing_category_id": "676772489112490",
+    "marketplace_listing_title": "Champion 3500W generator - won't start",
+    "marketplace_listing_seller": { "__typename": "User", "name": "Example Seller", "id": "pfbid0" },
+    "delivery_types": ["IN_PERSON"]
+  },
+  {
+    "id": "222", "listingUrl": "https://www.facebook.com/marketplace/item/222",
+    "listing_price": { "formatted_amount": "Free", "amount": "0.00" },
+    "location": { "reverse_geocode": { "city": "Layton", "state": "UT" } },
+    "is_sold": false, "marketplace_listing_title": "Free chest freezer, works",
+    "primary_listing_photo": { "photo_image_url": "https://scontent.example/photo2.jpg" }
+  },
+  { "id": "333", "marketplace_listing_title": "Sold thing", "is_sold": true, "listing_price": { "amount": "5" } },
+  { "url": "https://www.facebook.com/marketplace/x", "error": "Request failed", "errorDescription": "Status code 403" }
+]
